@@ -1,0 +1,1217 @@
+file 52770 1646725303                                           
+version 3
+run General-0-20220307-23:41:22-6217
+attr configname General
+attr datetime 20220307-23:41:22
+attr datetimef 20220307-234122
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network TsnLinearNetwork
+attr processid 6217
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../../inet/images
+config network TsnLinearNetwork
+config *.client.numApps 2
+config *.client.app[*].typename UdpSourceApp
+config *.client.app[0].display-name f0
+config *.client.app[1].display-name f1
+config *.client.app[*].io.destAddress "\"server\""
+config *.client.app[0].io.destPort 1000
+config *.client.app[1].io.destPort 1001
+config *.client.app[*].source.packetLength 175B
+config *.client.app[0].source.productionInterval 500us
+config *.client.app[1].source.productionInterval 500us
+config *.server.numApps 2
+config *.server.app[*].typename UdpSinkApp
+config *.server.app[0].io.localPort 1000
+config *.server.app[1].io.localPort 1001
+config *.client.hasOutgoingStreams true
+config *.client.bridging.streamIdentifier.identifier.mapping "[{stream: \"f0\", packetFilter: expr(udp.destPort == 1000)},\n                                                         {stream: \"f1\", packetFilter: expr(udp.destPort == 1001)}]"
+config *.client.bridging.streamCoder.encoder.mapping "[{stream: \"f0\", pcp: 6}]"
+config *.client.bridging.streamCoder.encoder.mapping "[{stream: \"f1\", pcp: 6}]"
+config *.switch.bridging.streamCoder.decoder.mapping "[{pcp: 6, stream: \"f0\",source:\"client\"},\n                                                 {pcp: 7, stream: \"f1\",source:\"client\"}]"
+config *.switch.bridging.streamCoder.encoder.mapping "[{pcp: 6, stream: \"f0\"},\n                                                 {pcp: 7, stream: \"f1\"}]"
+config *.*Switch.bridging.streamFilter.ingress.numStreams 2
+config *.*Switch.bridging.streamFilter.ingress.classifier.mapping "{\"f0\":0,\n                                                              \"f1\":1 }"
+config *.switch.hasIngressTrafficFiltering true
+config *.*Switch.bridging.streamFilter.ingress.numStreams 2
+config *.*Switch.bridging.streamFilter.ingress.classifier.mapping "{\"f0\": 0, \"f1\":1 }"
+config *.switch.bridging.streamFilter.ingress.meter[*].typename SingleRateTwoColorMeter
+config *.switch.bridging.streamFilter.ingress.meter[0].display-name f0
+config *.switch.bridging.streamFilter.ingress.meter[1].display-name f1
+config *.switch.bridging.streamFilter.ingress.meter[*].committedInformationRate 2.8Mbps
+config *.switch.bridging.streamFilter.ingress.meter[*].committedBurstSize 10kB
+config *.switch.hasEgressTrafficShaping true
+config *.switch.eth[*].macLayer.queue.*[6].display-name single
+config *.switch.eth[*].macLayer.queue.*[7].display-name double
+config *.switch.eth[*].macLayer.queue.transmissionGate[6].offset 0ms
+config *.switch.eth[*].macLayer.queue.transmissionGate[7].offset 1ms
+config *.switch.eth[*].macLayer.queue.transmissionGate[6].durations "[1ms, 1ms]"
+config *.switch.eth[*].macLayer.queue.transmissionGate[7].durations "[1ms, 1ms]"
+config *.visualizer.gateVisualizer.displayGates true
+config *.visualizer.gateVisualizer.displayDuration 100us
+config *.visualizer.gateVisualizer.gateFilter "\"**.eth[0].**\""
+config *.visualizer.gateVisualizer.height 16
+
+vector 0 TsnLinearNetwork.client.eth[0].macLayer.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 1 TsnLinearNetwork.client.eth[0].macLayer.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 2 TsnLinearNetwork.client.eth[0].phyLayer.transmitter transmitting:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "count(transmissionStarted) - count(transmissionEnded)"
+attr title "transmitting state"
+attr type int
+vector 3 TsnLinearNetwork.client.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 4 TsnLinearNetwork.client.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 5 TsnLinearNetwork.client.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 6 TsnLinearNetwork.switch.eth[0].macLayer.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(localSignal(packetPushEnded)) - count(localSignal(packetPulled)) - count(localSignal(packetRemoved)) - count(localSignal(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 7 TsnLinearNetwork.switch.eth[0].macLayer.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(localSignal(packetPushEnded))) - sum(packetLength(localSignal(packetPulled))) - sum(packetLength(localSignal(packetRemoved))) - sum(packetLength(localSignal(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 8 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[0] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 9 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[0] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 10 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[1] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 11 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[1] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 12 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[2] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 13 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[2] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 14 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[3] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 15 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[3] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 16 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[4] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 17 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[4] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 18 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[5] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 19 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[5] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 20 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[6] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.single
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 21 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[6] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.single
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 22 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[7] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.double
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 23 TsnLinearNetwork.switch.eth[0].macLayer.queue.queue[7] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.double
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 24 TsnLinearNetwork.switch.eth[0].phyLayer.transmitter transmitting:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "count(transmissionStarted) - count(transmissionEnded)"
+attr title "transmitting state"
+attr type int
+vector 25 TsnLinearNetwork.switch.eth[1].macLayer.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(localSignal(packetPushEnded)) - count(localSignal(packetPulled)) - count(localSignal(packetRemoved)) - count(localSignal(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 26 TsnLinearNetwork.switch.eth[1].macLayer.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(localSignal(packetPushEnded))) - sum(packetLength(localSignal(packetPulled))) - sum(packetLength(localSignal(packetRemoved))) - sum(packetLength(localSignal(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 27 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[0] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 28 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[0] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 29 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[1] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 30 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[1] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 31 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[2] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 32 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[2] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 33 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[3] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 34 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[3] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 35 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[4] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 36 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[4] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 37 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[5] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 38 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[5] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 39 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[6] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 40 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[6] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 41 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[7] queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.double
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 42 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[7] queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.double
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 43 TsnLinearNetwork.switch.eth[1].phyLayer.transmitter transmitting:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "count(transmissionStarted) - count(transmissionEnded)"
+attr title "transmitting state"
+attr type int
+vector 44 TsnLinearNetwork.server.eth[0].macLayer.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(totalCount(packetPushEnded) - count(packetPulled) - count(packetRemoved) - count(packetDropped))"
+attr title "queue length"
+attr unit pk
+vector 45 TsnLinearNetwork.server.eth[0].macLayer.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(sum(packetLength(packetPushEnded)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped)))"
+attr title "queue bit length"
+attr unit b
+vector 46 TsnLinearNetwork.server.eth[0].phyLayer.transmitter transmitting:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "count(transmissionStarted) - count(transmissionEnded)"
+attr title "transmitting state"
+attr type int
+vector 47 TsnLinearNetwork.server.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 48 TsnLinearNetwork.server.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 49 TsnLinearNetwork.server.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 50 TsnLinearNetwork.client.app[0].source packetLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.client.f0.source
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "packet lengths"
+attr unit b
+vector 51 TsnLinearNetwork.client.app[1].source packetLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.client.f1.source
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "packet lengths"
+attr unit b
+vector 52 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[0] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 53 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[1] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 54 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[2] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 55 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[3] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 56 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[4] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 57 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[5] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 58 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[6] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.single
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 59 TsnLinearNetwork.switch.eth[0].macLayer.queue.transmissionGate[7] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[0].macLayer.queue.double
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 60 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[0] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 61 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[1] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 62 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[2] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 63 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[3] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 64 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[4] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 65 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[5] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 66 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[6] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 67 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[7] gateState:vector ETV
+attr enum CLOSED,OPEN
+attr interpolationmode sample-hold
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.double
+attr recordingmode vector
+attr source gateStateChanged
+attr title "gate state"
+attr type enum
+vector 68 TsnLinearNetwork.client.app[0].io packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.client.f0.io
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 69 TsnLinearNetwork.client.app[1].io packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.client.f1.io
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 70 TsnLinearNetwork.client.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 71 TsnLinearNetwork.client.bridging.streamIdentifier.identifier incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 72 TsnLinearNetwork.client.bridging.streamIdentifier.identifier outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 73 TsnLinearNetwork.client.bridging.streamCoder.encoder incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 74 TsnLinearNetwork.client.bridging.streamCoder.encoder outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 75 TsnLinearNetwork.client.ieee8021q.qTagHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 76 TsnLinearNetwork.client.ieee8021q.qTagHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 77 TsnLinearNetwork.client.ethernet.macHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 78 TsnLinearNetwork.client.ethernet.macHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 79 TsnLinearNetwork.client.ethernet.paddingInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 80 TsnLinearNetwork.client.ethernet.paddingInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 81 TsnLinearNetwork.client.eth[0].macLayer.queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 82 TsnLinearNetwork.client.eth[0].macLayer.queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 83 TsnLinearNetwork.client.eth[0].macLayer.queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 84 TsnLinearNetwork.client.eth[0].macLayer.server incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "incoming packet lengths"
+attr unit b
+vector 85 TsnLinearNetwork.client.eth[0].macLayer.server outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "outgoing packet lengths"
+attr unit b
+vector 86 TsnLinearNetwork.client.eth[0].macLayer.fcsInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 87 TsnLinearNetwork.client.eth[0].macLayer.fcsInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 88 TsnLinearNetwork.client.eth[0].macLayer.outboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 89 TsnLinearNetwork.client.eth[0].macLayer.outboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 90 TsnLinearNetwork.client.eth[0].phyLayer.phyHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 91 TsnLinearNetwork.client.eth[0].phyLayer.phyHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 92 TsnLinearNetwork.client.eth[0].phyLayer.outboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 93 TsnLinearNetwork.client.eth[0].phyLayer.outboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 94 TsnLinearNetwork.client.eth[0].phyLayer.transmitter transmissionTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetDuration(transmissionEnded)
+attr title "transmission time"
+attr unit s
+vector 95 TsnLinearNetwork.switch.eth[0].phyLayer.receiver receptionTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetDuration(receptionEnded)
+attr title "reception time"
+attr unit s
+vector 96 TsnLinearNetwork.switch.eth[0].phyLayer.inboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 97 TsnLinearNetwork.switch.eth[0].phyLayer.inboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 98 TsnLinearNetwork.switch.eth[0].phyLayer.phyHeaderChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 99 TsnLinearNetwork.switch.eth[0].phyLayer.phyHeaderChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 100 TsnLinearNetwork.switch.eth[0].macLayer.inboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 101 TsnLinearNetwork.switch.eth[0].macLayer.inboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 102 TsnLinearNetwork.switch.eth[0].macLayer.fcsChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 103 TsnLinearNetwork.switch.eth[0].macLayer.fcsChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 104 TsnLinearNetwork.switch.ethernet.macHeaderChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 105 TsnLinearNetwork.switch.ethernet.macHeaderChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 106 TsnLinearNetwork.switch.ieee8021q.qTagHeaderChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 107 TsnLinearNetwork.switch.ieee8021q.qTagHeaderChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 108 TsnLinearNetwork.switch.bridging.interfaceRelay.learner incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 109 TsnLinearNetwork.switch.bridging.interfaceRelay.learner outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 110 TsnLinearNetwork.switch.bridging.streamCoder.decoder incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 111 TsnLinearNetwork.switch.bridging.streamCoder.decoder outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 112 TsnLinearNetwork.switch.bridging.streamFilter.ingress.classifier packetLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "packet lengths"
+attr unit b
+vector 113 TsnLinearNetwork.switch.bridging.directionReverser.reverser incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 114 TsnLinearNetwork.switch.bridging.directionReverser.reverser outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 115 TsnLinearNetwork.switch.bridging.streamCoder.encoder incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 116 TsnLinearNetwork.switch.bridging.streamCoder.encoder outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 117 TsnLinearNetwork.switch.ieee8021q.qTagHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 118 TsnLinearNetwork.switch.ieee8021q.qTagHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 119 TsnLinearNetwork.switch.ethernet.macHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 120 TsnLinearNetwork.switch.ethernet.macHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 121 TsnLinearNetwork.switch.ethernet.paddingInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 122 TsnLinearNetwork.switch.ethernet.paddingInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 123 TsnLinearNetwork.switch.eth[1].macLayer.queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(localSignal(packetPushStarted))
+attr title "incoming packet lengths"
+attr unit b
+vector 124 TsnLinearNetwork.switch.eth[1].macLayer.queue.classifier packetLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "packet lengths"
+attr unit b
+vector 125 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[6] incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 126 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[6] queueingTime:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 127 TsnLinearNetwork.switch.eth[1].macLayer.queue.queue[6] outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 128 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[6] incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 129 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionGate[6] outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr moduledisplaypath TsnLinearNetwork.switch.eth[1].macLayer.queue.single
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 130 TsnLinearNetwork.switch.eth[1].macLayer.queue.transmissionSelection packetLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "packet lengths"
+attr unit b
+vector 131 TsnLinearNetwork.switch.eth[1].macLayer.queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(localSignal(packetPulled))
+attr title "queueing times"
+attr unit s
+vector 132 TsnLinearNetwork.switch.eth[1].macLayer.queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(localSignal(packetPulled))
+attr title "outgoing packet lengths"
+attr unit b
+vector 133 TsnLinearNetwork.switch.eth[1].macLayer.server incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "incoming packet lengths"
+attr unit b
+vector 134 TsnLinearNetwork.switch.eth[1].macLayer.server outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "outgoing packet lengths"
+attr unit b
+vector 135 TsnLinearNetwork.switch.eth[1].macLayer.fcsInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 136 TsnLinearNetwork.switch.eth[1].macLayer.fcsInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 137 TsnLinearNetwork.switch.eth[1].macLayer.outboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 138 TsnLinearNetwork.switch.eth[1].macLayer.outboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 139 TsnLinearNetwork.switch.eth[1].phyLayer.phyHeaderInserter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 140 TsnLinearNetwork.switch.eth[1].phyLayer.phyHeaderInserter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 141 TsnLinearNetwork.switch.eth[1].phyLayer.outboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 142 TsnLinearNetwork.switch.eth[1].phyLayer.outboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 143 TsnLinearNetwork.switch.eth[1].phyLayer.transmitter transmissionTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetDuration(transmissionEnded)
+attr title "transmission time"
+attr unit s
+vector 144 TsnLinearNetwork.server.eth[0].phyLayer.receiver receptionTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetDuration(receptionEnded)
+attr title "reception time"
+attr unit s
+vector 145 TsnLinearNetwork.server.eth[0].phyLayer.inboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 146 TsnLinearNetwork.server.eth[0].phyLayer.inboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 147 TsnLinearNetwork.server.eth[0].phyLayer.phyHeaderChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 148 TsnLinearNetwork.server.eth[0].phyLayer.phyHeaderChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 149 TsnLinearNetwork.server.eth[0].macLayer.inboundEmitter incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 150 TsnLinearNetwork.server.eth[0].macLayer.inboundEmitter outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 151 TsnLinearNetwork.server.eth[0].macLayer.fcsChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 152 TsnLinearNetwork.server.eth[0].macLayer.fcsChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+vector 153 TsnLinearNetwork.server.ethernet.macHeaderChecker incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedIn, packetPulledIn))"
+attr title "incoming packet lengths"
+attr unit b
+vector 154 TsnLinearNetwork.server.ethernet.macHeaderChecker outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source "packetLength(merge(packetPushedOut, packetPulledOut))"
+attr title "outgoing packet lengths"
+attr unit b
+0	48584 76 0 19 0 0.0000196 8 0 1 2 2
+1	48660 82 0 19 0 0.0000196 8 0 1768 3504 6139520
+2	48742 60 0 19 0 0.0000196 5 0 1 2 2
+3	48802 8 0 0 0 0 1 0 0 0 0
+4	48810 8 0 0 0 0 1 0 0 0 0
+5	48818 8 0 0 0 0 1 0 0 0 0
+6	48826 32 0 0 0 0 4 0 0 0 0
+7	48858 32 0 0 0 0 4 0 0 0 0
+8	48890 32 0 0 0 0 4 0 0 0 0
+9	48922 32 0 0 0 0 4 0 0 0 0
+10	48954 36 0 0 0 0 4 0 0 0 0
+11	48990 36 0 0 0 0 4 0 0 0 0
+12	49026 36 0 0 0 0 4 0 0 0 0
+13	49062 36 0 0 0 0 4 0 0 0 0
+14	49098 36 0 0 0 0 4 0 0 0 0
+15	49134 36 0 0 0 0 4 0 0 0 0
+16	49170 36 0 0 0 0 4 0 0 0 0
+17	49206 36 0 0 0 0 4 0 0 0 0
+18	49242 36 0 0 0 0 4 0 0 0 0
+19	49278 36 0 0 0 0 4 0 0 0 0
+20	49314 36 0 0 0 0 4 0 0 0 0
+21	49350 36 0 0 0 0 4 0 0 0 0
+22	49386 36 0 0 0 0 4 0 0 0 0
+23	49422 36 0 0 0 0 4 0 0 0 0
+24	49458 18 0 0 0 0 2 0 0 0 0
+25	49476 75 0 18 0 0.00001869 6 -1 0 -1 1
+26	49551 78 0 18 0 0.00001869 6 -1768 0 -1768 3125824
+27	49629 36 0 0 0 0 4 0 0 0 0
+28	49665 36 0 0 0 0 4 0 0 0 0
+29	49701 36 0 0 0 0 4 0 0 0 0
+30	49737 36 0 0 0 0 4 0 0 0 0
+31	49773 36 0 0 0 0 4 0 0 0 0
+32	49809 36 0 0 0 0 4 0 0 0 0
+33	49845 36 0 0 0 0 4 0 0 0 0
+34	49881 36 0 0 0 0 4 0 0 0 0
+35	49917 36 0 0 0 0 4 0 0 0 0
+36	49953 36 0 0 0 0 4 0 0 0 0
+37	49989 36 0 0 0 0 4 0 0 0 0
+38	50025 36 0 0 0 0 4 0 0 0 0
+39	50061 74 0 18 0 0.00001869 6 0 1 1 1
+40	50135 77 0 18 0 0.00001869 6 0 1768 1768 3125824
+41	50212 36 0 0 0 0 4 0 0 0 0
+42	50248 36 0 0 0 0 4 0 0 0 0
+43	50284 56 0 20 0 0.00003733 4 0 1 1 1
+44	50340 36 0 0 0 0 4 0 0 0 0
+45	50376 36 0 0 0 0 4 0 0 0 0
+46	50412 18 0 0 0 0 2 0 0 0 0
+47	50430 9 0 0 0 0 1 0 0 0 0
+48	50439 9 0 0 0 0 1 0 0 0 0
+49	50448 9 0 0 0 0 1 0 0 0 0
+50	50457 12 0 0 0 0 1 1400 1400 1400 1960000
+51	50469 12 0 0 0 0 1 1400 1400 1400 1960000
+52	50481 9 0 0 0 0 1 1 1 1 1
+53	50490 9 0 0 0 0 1 1 1 1 1
+54	50499 9 0 0 0 0 1 1 1 1 1
+55	50508 9 0 0 0 0 1 1 1 1 1
+56	50517 9 0 0 0 0 1 1 1 1 1
+57	50526 9 0 0 0 0 1 1 1 1 1
+58	50535 9 0 0 0 0 1 1 1 1 1
+59	50544 18 0 3 0 0 2 0 1 1 1
+60	50562 9 0 0 0 0 1 1 1 1 1
+61	50571 9 0 0 0 0 1 1 1 1 1
+62	50580 9 0 0 0 0 1 1 1 1 1
+63	50589 9 0 0 0 0 1 1 1 1 1
+64	50598 9 0 0 0 0 1 1 1 1 1
+65	50607 9 0 0 0 0 1 1 1 1 1
+66	50616 9 0 0 0 0 1 1 1 1 1
+67	50625 18 0 4 0 0 2 0 1 1 1
+68	50643 11 1 1 0 0 1 175 175 175 30625
+69	50654 11 2 2 0 0 1 175 175 175 30625
+70	50665 24 11 12 0 0 2 183 183 366 66978
+71	50689 26 15 16 0 0 2 1624 1624 3248 5274752
+72	50715 26 15 16 0 0 2 1624 1624 3248 5274752
+73	50741 26 15 16 0 0 2 1624 1624 3248 5274752
+74	50767 26 15 16 0 0 2 1624 1624 3248 5274752
+75	50793 13 15 15 0 0 1 1624 1624 1624 2637376
+76	50806 13 15 15 0 0 1 1656 1656 1656 2742336
+77	50819 26 15 16 0 0 2 1624 1656 3280 5379712
+78	50845 26 15 16 0 0 2 1736 1768 3504 6139520
+79	50871 26 15 16 0 0 2 1736 1768 3504 6139520
+80	50897 26 15 16 0 0 2 1736 1768 3504 6139520
+81	50923 26 15 16 0 0 2 1736 1768 3504 6139520
+82	50949 35 15 19 0 0.0000196 2 0 1.96e-05 1.96e-05 3.8416e-10
+83	50984 34 15 19 0 0.0000196 2 1736 1768 3504 6139520
+84	51018 34 15 19 0 0.0000196 2 1736 1768 3504 6139520
+85	51052 34 15 19 0 0.0000196 2 1736 1768 3504 6139520
+86	51086 34 15 19 0 0.0000196 2 1736 1768 3504 6139520
+87	51120 34 15 19 0 0.0000196 2 1768 1800 3568 6365824
+88	51154 34 15 19 0 0.0000196 2 1768 1800 3568 6365824
+89	51188 34 15 19 0 0.0000196 2 1768 1800 3568 6365824
+90	51222 34 15 19 0 0.0000196 2 1768 1800 3568 6365824
+91	51256 34 15 19 0 0.0000196 2 1832 1864 3696 6830720
+92	51290 34 15 19 0 0.0000196 2 1832 1864 3696 6830720
+93	51324 34 15 19 0 0.0000196 2 1832 1864 3696 6830720
+94	51358 27 17 17 0.00001864 0.00001864 1 1.864e-05 1.864e-05 1.864e-05 3.474496e-10
+95	51385 27 18 18 0.00001869 0.00001869 1 1.864e-05 1.864e-05 1.864e-05 3.474496e-10
+96	51412 22 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+97	51434 22 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+98	51456 22 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+99	51478 22 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+100	51500 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+101	51523 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+102	51546 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+103	51569 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+104	51592 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+105	51615 23 18 18 0.00001869 0.00001869 1 1656 1656 1656 2742336
+106	51638 23 18 18 0.00001869 0.00001869 1 1656 1656 1656 2742336
+107	51661 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+108	51684 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+109	51707 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+110	51730 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+111	51753 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+112	51776 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+113	51799 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+114	51822 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+115	51845 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+116	51868 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+117	51891 23 18 18 0.00001869 0.00001869 1 1624 1624 1624 2637376
+118	51914 23 18 18 0.00001869 0.00001869 1 1656 1656 1656 2742336
+119	51937 23 18 18 0.00001869 0.00001869 1 1656 1656 1656 2742336
+120	51960 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+121	51983 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+122	52006 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+123	52029 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+124	52052 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+125	52075 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+126	52098 20 18 18 0.00001869 0.00001869 1 0 0 0 0
+127	52118 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+128	52141 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+129	52164 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+130	52187 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+131	52210 20 18 18 0.00001869 0.00001869 1 0 0 0 0
+132	52230 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+133	52253 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+134	52276 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+135	52299 23 18 18 0.00001869 0.00001869 1 1768 1768 1768 3125824
+136	52322 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+137	52345 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+138	52368 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+139	52391 23 18 18 0.00001869 0.00001869 1 1800 1800 1800 3240000
+140	52414 23 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+141	52437 23 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+142	52460 23 18 18 0.00001869 0.00001869 1 1864 1864 1864 3474496
+143	52483 28 20 20 0.00003733 0.00003733 1 1.864e-05 1.864e-05 1.864e-05 3.474496e-10
+144	52511 28 21 21 0.00003738 0.00003738 1 1.864e-05 1.864e-05 1.864e-05 3.474496e-10
+145	52539 23 21 21 0.00003738 0.00003738 1 1864 1864 1864 3474496
+146	52562 23 21 21 0.00003738 0.00003738 1 1864 1864 1864 3474496
+147	52585 23 21 21 0.00003738 0.00003738 1 1864 1864 1864 3474496
+148	52608 23 21 21 0.00003738 0.00003738 1 1800 1800 1800 3240000
+149	52631 23 21 21 0.00003738 0.00003738 1 1800 1800 1800 3240000
+150	52654 23 21 21 0.00003738 0.00003738 1 1800 1800 1800 3240000
+151	52677 23 21 21 0.00003738 0.00003738 1 1800 1800 1800 3240000
+152	52700 23 21 21 0.00003738 0.00003738 1 1768 1768 1768 3125824
+153	52723 23 21 21 0.00003738 0.00003738 1 1768 1768 1768 3125824
+154	52746 23 21 21 0.00003738 0.00003738 1 1656 1656 1656 2742336
+

@@ -1,0 +1,3 @@
+package multicyclecqf;
+
+@license(LGPL);
